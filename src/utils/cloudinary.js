@@ -20,6 +20,6 @@ const uploadOnCloudinary = async (localFilePath) => {
         fs.unlinkSync(localFilePath); // delete the local file in case of error
         return null;
     }
-}
+} 
 
 export { uploadOnCloudinary };
