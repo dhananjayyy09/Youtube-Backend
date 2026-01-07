@@ -20,7 +20,6 @@ import userRouter from "./routes/user.routes.js";
 //routes decalaration
 app.use("/api/v1/users", userRouter)
 
-// htps://localhost:8000/api/v1/users/register
+// http://localhost:8000/api/v1/users/register
 
-
-export default app; 
+export default app;
