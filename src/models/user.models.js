@@ -1,6 +1,6 @@
 import mongoose, {Schema} from 'mongoose';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 const user = new Schema(
     {
@@ -29,7 +29,7 @@ const user = new Schema(
             type: String, // cloudnary url
             required: true,
         },
-        coverimage: {
+        coverImage: {
             type: String, // cloudnary url
         },
         watchHistory: [
@@ -48,12 +48,12 @@ const user = new Schema(
     }, {timestamps: true}
 )
 
-user.pre("save", async function(next) {
-    if(!this.isModified("password")) return next();
+user.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 10);
-    next();
-})
+});
+
 
 user.methods.isPasswordCorrect = async function(password) {
     return await bcrypt.compare(password, this.password);

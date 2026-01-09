@@ -16,12 +16,12 @@ const registerUser = asyncHandler(async (req, res) => {
     // return response
 
     // get user details
-    const { fullName, email, username, password } = req.body
-    console.log("email: ", email);
+    const { fullname, email, username, password } = req.body
+    // console.log(req.body);
 
     // validation - not empty fields
     if (
-        [fullName, email, password, username].some((field) => field?.trim() === "")) {
+        [fullname, email, password, username].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
 
@@ -35,9 +35,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // check for images and avatar
     const avatarLocalPath = req.files?.avatar[0]?.path
-    const coverImageLocalPath = req.files?.coverImage[0]?.path
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar is required")
+    }
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
+        coverImageLocalPath = req.files.coverImage[0].path
     }
 
     // upload to cloudinary
@@ -45,11 +48,11 @@ const registerUser = asyncHandler(async (req, res) => {
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
     if (!avatar) {
         throw new ApiError(400, "Avatar is required")
-    }
+    } 
 
     // create user object
     const user = await User.create({
-        fullName,
+        fullname,
         email,
         avatar: avatar.url,
         coverImage: coverImage?.url || "",
@@ -62,6 +65,8 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!createdUser) {
         throw new ApiError(500, "User creation failed")
     }
+    console.log("Created user from DB:", createdUser);
+
 
     // return response
     res.status(201).json(
